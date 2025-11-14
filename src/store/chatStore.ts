@@ -75,21 +75,24 @@ export const useChatStore = defineStore('chat', () => {
         messages.value = [];
       }
     }
-    localStorage.removeItem('message');
   }
 
   function clearHistory(): void {
     localStorage.removeItem('history');
   }
 
-  function saveMessageToStorage(msgObject: Message): void {
-    localStorage.setItem('message', JSON.stringify(msgObject));
+  function saveMessageToStorage(): void {
+    const allMessages = messages.value.filter((m) => m.status);
+    localStorage.setItem('history', JSON.stringify(allMessages));
   }
 
   function addExternalMessage(obj: unknown): void {
     const msg = Message.fromJSON(obj);
     if (msg) {
-      messages.value.push(msg);
+      const exists = messages.value.some((m) => m.id === msg.id);
+      if (!exists) {
+        messages.value.push(msg);
+      }
     }
   }
 
@@ -103,8 +106,7 @@ export const useChatStore = defineStore('chat', () => {
       });
 
       const msg = addMessage(text, true);
-      saveMessageToStorage(msg);
-      localStorage.removeItem('message');
+      saveState();
       return msg;
     } catch (err) {
       const msg = addMessage(text, false);
