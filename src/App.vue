@@ -12,7 +12,6 @@ const store = useChatStore();
 
 const saveState = (): void => {
   store.saveState();
-  localStorage.removeItem('message');
 };
 
 onMounted((): void => {

@@ -40,13 +40,16 @@ const messageText = ref<string>('');
 const inputRef = ref<InstanceType<typeof CustomInput> | null>(null);
 
 const onGetNewMessage = (): void => {
-  const msgData = localStorage.getItem('message');
-  if (!msgData) return;
+  const history = localStorage.getItem('history');
+  if (!history) return;
   try {
-    const parsed = JSON.parse(msgData);
-    store.addExternalMessage(parsed);
+    const parsedMessages = JSON.parse(history) as Array<Record<string, unknown>>;
+    const lastMessage = parsedMessages[parsedMessages.length - 1];
+    if (lastMessage) {
+      store.addExternalMessage(lastMessage);
+    }
   } catch (e) {
-    console.error('Failed to parse message from storage event:', e);
+    console.error('Failed to parse history from storage event:', e);
   }
 };
 
