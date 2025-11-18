@@ -10,6 +10,11 @@ const pinia = createPinia();
 app.use(pinia);
 app.use(router);
 
+if (import.meta.env.DEV) {
+	// enable devtools in development builds
+	app.config.devtools = true;
+}
+
 import { useChatStore } from '@/store/chatStore';
 import type { RouteLocationNormalized } from 'vue-router';
 
